@@ -22,14 +22,22 @@ function UserSignup() {
       email: email,
       password
     }
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser);
-    // console.log(response.data);
-    // console.log(response.status);
-    if (response) {
-      const data = await response.data;
-      console.log(data.user);
-      setUser(data.user);
-      navigate("/home");
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser);
+      // console.log(response.data);
+      // console.log(response.status);
+      if (response) {
+        const data = await response.data;
+        localStorage.setItem('token',data.token);
+        console.log(data.user);
+        setUser(data.user);
+        navigate("/home");
+      }
+    }
+    catch(err){
+      if(err.response.data.message) alert(err.response.data.message);
+      else if(err.response.data.errors[0].msg)alert(err.response.data.errors[0].msg);
+      else alert("something went wrong");
     }
     setEmail('');
     setPassword('');

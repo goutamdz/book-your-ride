@@ -10,11 +10,11 @@ function CaptainSignup() {
   const [password, setPassword] = useState('');
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
-  const [color,setColor]=useState('');
-  const [plateNo,setPlateNo]=useState('');
-  const [vehicleType,setVehicleType]=useState('');
-  const [capacity,setCapacity]=useState(Number);
-  const { user, setUser } = useContext(CaptainDataContext);
+  const [color, setColor] = useState('');
+  const [plateNo, setPlateNo] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [capacity, setCapacity] = useState(Number);
+  const { captain, setCaptain } = useContext(CaptainDataContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,21 +25,29 @@ function CaptainSignup() {
       },
       email: email,
       password,
-      vehicle:{
+      vehicle: {
         color,
-        plate:plateNo,
+        plate: plateNo,
         capacity,
         vehicleType
       }
     }
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/register`, newUser);
-    // console.log(response.data);
-    // console.log(response.status);
-    if (response) {
-      const data = await response.data;
-      console.log(data.captain);
-      setUser(data.captain);
-      navigate("/home");
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/register`, newUser);
+      // console.log(response.data);
+      // console.log(response.status);
+      if (response) {
+        const data = await response.data;
+        console.log(data.captain);
+        localStorage.setItem('token',data.token);
+        setCaptain(data.captain);
+        navigate("/captain-home");
+      }
+    }
+    catch(err){
+      if(err.response.data.message) alert(err.response.data.message);
+      else if(err.response.data.errors[0].msg)alert(err.response.data.errors[0].msg);
+      else alert("something went wrong");
     }
     setEmail('');
     setPassword('');
@@ -75,7 +83,7 @@ function CaptainSignup() {
             <input type='password' id='password' className='border border-black rounded-lg p-1 w-full'
               onChange={(e) => setPassword(e.target.value)} value={password}
             />
-            
+
           </div>
 
 
@@ -87,13 +95,13 @@ function CaptainSignup() {
                 type='text'
                 placeholder='Vehicle Number'
                 className='p-1 border border-black rounded-lg w-[45.7%] mr-[4.3%]'
-                value={plateNo} onChange={(e)=>{setPlateNo(e.target.value)}}
+                value={plateNo} onChange={(e) => { setPlateNo(e.target.value) }}
               ></input>
               <input
                 type='text'
                 placeholder='Color of vehicle'
                 className='p-1 border border-black rounded-lg w-1/2 '
-                value={color} onChange={(e)=>{setColor(e.target.value)}}
+                value={color} onChange={(e) => { setColor(e.target.value) }}
               ></input>
             </div>
             <div>
@@ -101,15 +109,15 @@ function CaptainSignup() {
                 type='text'
                 placeholder='Capacity'
                 className='p-1 border border-black rounded-lg w-[45.7%] mr-[4.3%]'
-                value={capacity} onChange={(e)=>{setCapacity(parseInt(e.target.value))}}
+                value={capacity} onChange={(e) => { setCapacity(parseInt(e.target.value)) }}
               ></input>
-              <select 
+              <select
                 className='border border-black p-1 rounded-lg font-light text-gray-600 w-1/2'
                 value={vehicleType}
                 onChange={(e) => setVehicleType(e.target.value)}
-                required 
+                required
               >
-                <option value="">Select Vehicle Type</option> 
+                <option value="">Select Vehicle Type</option>
                 <option value="motorcycle">motorcycle</option>
                 <option value="car">car</option>
                 <option value="auto">auto</option>
