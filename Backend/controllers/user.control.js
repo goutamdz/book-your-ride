@@ -9,8 +9,6 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { fullname, email, password } = req.body;
-    console.log(fullname);
-    console.log(email,password)
 
     const hashedPassword = await userModel.hashPassword(password);
 
@@ -44,12 +42,27 @@ module.exports.loginUser = async (req, res, next) => {
 
 module.exports.getUserProfile = async (req, res, next) => {
     res.status(200).json(req.user);
-
 }
 
 module.exports.logoutUser = async (req, res, next) => {
-    res.clearCookie('token');
-    const token = req.cookies.token || req.headers.authorization;
-    await blackListTokenModel.create({ token });
-    res.status(200).json({ message: 'Logged out successfully' });
-}
+    try {
+        res.clearCookie('token'); // Clear the cookie
+
+        const token = req.cookies.token || req.headers.authorization;
+        if (!token) {
+            return res.status(400).json({ message: "No token provided" });
+        }
+
+        // Check if the token is already blacklisted
+        await blackListTokenModel.findOneAndUpdate(
+            { token },
+            { token },
+            { upsert: true, new: true } // Inserts if not exists
+        );
+
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.error("Logout Error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

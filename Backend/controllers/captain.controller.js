@@ -53,7 +53,7 @@ module.exports.loginCaptain = async (req, res) => {
 
     const isMatch = await captain.comparePassword(password);
     if (!isMatch) {
-        return res.status(400).json({ errors: [{ msg: 'Invalid or password' }] });
+        return res.status(400).json({ errors: [{ msg: 'Invalid password' }] });
     }
     const token = captain.generateAuthToken();
     res.cookie('token', token);
