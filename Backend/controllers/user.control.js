@@ -9,6 +9,8 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { fullname, email, password } = req.body;
+    console.log(fullname);
+    console.log(email,password)
 
     const hashedPassword = await userModel.hashPassword(password);
 
