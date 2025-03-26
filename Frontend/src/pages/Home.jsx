@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate for naviga
 import 'remixicon/fonts/remixicon.css';
 import Location from '../components/Location';
 import RideInfo from '../components/RideInfo';
+import ConfirmRide from '../components/ConfirmRide';
+import LookingForVehicle from '../components/LookingForVehicle';
 
 const Home = () => {
   const [down, setDown] = useState(false);
@@ -10,9 +12,9 @@ const Home = () => {
   const [destination, setDestination] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); // State to track the current search query
   const [isPickupSelected, setIsPickupSelected] = useState(false); // Flag to check if pickup is selected
-  const [isDestinationSelected, setIsDestinationSelected] = useState(false); // Flag to check if destination is 
-  // selected
+  const [isDestinationSelected, setIsDestinationSelected] = useState(false); //check if destination is selected
   const [selectedRide, setSelectedRide] = useState(null); // State to track the selected ride
+  const [isRideConfirmed, setIsRideConfirmed] = useState(false); // Flag to check if ride is confirmed
   const activeInputRef = useRef(null); // Ref to track the active input field
   const navigate = useNavigate(); // Hook for navigation
 
@@ -29,7 +31,8 @@ const Home = () => {
       setIsDestinationSelected(true); // Mark destination as selected
     }
     setSelectedRide(null)
-    setSearchQuery(''); 
+    setSearchQuery('');
+    setIsRideConfirmed(false);
   };
 
 
@@ -92,15 +95,27 @@ const Home = () => {
           </form>
         </div>
 
-        <div className={`w-96 h-[70%] bg-gray-400 ${!down ? 'hidden' : ''}`}>
+        <div className={`w-96 h-[70%] border ${!down ? 'hidden' : ''}`}>
           {isPickupSelected && isDestinationSelected ? (
             selectedRide !== null ? (
-              <div>Got it</div>
+              (isRideConfirmed ?
+                <LookingForVehicle 
+                  selectedRide={selectedRide}
+                  pickup={pickup}
+                  destination={destination}
+                /> :
+                <ConfirmRide
+                  selectedRide={selectedRide}
+                  pickup={pickup}
+                  destination={destination}
+                  setIsRideConfirmed={setIsRideConfirmed}
+                />)
             ) : (
               <RideInfo
                 pickup={pickup}
                 destination={destination}
                 setSelectedRide={setSelectedRide}
+                setIsRideConfirmed={setIsRideConfirmed}
               />
             )
           ) : (
