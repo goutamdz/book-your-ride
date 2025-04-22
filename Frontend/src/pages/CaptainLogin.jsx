@@ -15,11 +15,12 @@ function CaptainLogin() {
     let newUser = { email, password };
     try {
       let response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/login`, newUser);
+      console.log("our data on frontend =>",response.data);
       if (response.status == 200) {
         setCaptain(response.data.captain);
         localStorage.setItem('token',response.data.token);
         console.log(response.data.captain);
-        navigate("/home");
+        navigate("/captain-home");
       }
     }
     catch (err) {

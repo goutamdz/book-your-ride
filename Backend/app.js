@@ -7,6 +7,7 @@ app.use(cors());
 const connectDB = require('./db/db');
 const userRoutes = require('./routes/user.routes');
 const captainRoutes = require('./routes/captain.routes');
+const mapsRoutes = require('./routes/maps.routes');
 
 
 app.use(express.json());
@@ -17,6 +18,7 @@ connectDB();
 
 app.use('/user', userRoutes);
 app.use('/captain', captainRoutes);
+app.use('/maps', mapsRoutes);
 
 
 app.get('/', (req, res) => {
