@@ -76,7 +76,7 @@ function UserSignup() {
           <button type='submit' className='w-full border-2 p-2 rounded-lg bg-blue-600 text-white mb-2'
             onClick={handleSubmit}
           >
-            Login
+            Signup
           </button>
           <div className="inline-flex space-x-1">
             <span>Already have an account?</span>

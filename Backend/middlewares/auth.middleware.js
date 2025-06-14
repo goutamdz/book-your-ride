@@ -6,7 +6,7 @@ const captainModel = require('../models/captain.model');
 module.exports.authUser = async (req, res, next) => {
     // Get token from cookies or authorization header
     console.log(req.headers.authorization || req.cookies.token);
-    const token = (req.cookies.token)||(req.headers.authorization && req.headers.authorization && req.headers.authorization.split(' ')[1])|| null;
+    const token = (req.cookies.token)||(req.headers.authorization && req.headers.authorization.split(' ')[1])|| null;
     //|| (req.headers.authorization && req.headers.authorization.split(' ')[1])
 
     if (!token) {
