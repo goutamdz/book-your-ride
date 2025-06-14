@@ -1,77 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Location = ({ searchQuery, onSelectLocation }) => {
-  const ads = [
-    {
-      id: 1,
-      lat: 30,
-      long: 40,
-      title: 'Green Valley, Jalandhar, Punjab, India',
-      pin: 144411,
-    },
-    {
-      id: 2,
-      lat: 30,
-      long: 40,
-      title: 'Modern Town, Jalandhar, Punjab, India',
-      pin: 144424,
-    },
-    {
-      id: 3,
-      lat: 30,
-      long: 40,
-      title: 'Law Gate, Jalandhar, Punjab, India',
-      pin: 144412,
-    },
-    {
-      id: 4,
-      lat: 30,
-      long: 40,
-      title: 'Phagwara, Jalandhar, Punjab, India',
-      pin: 144411,
-    },
-    {
-      id: 5,
-      lat: 30,
-      long: 40,
-      title: 'Kalindi, Kunj, Delhi, India',
-      pin: 175476,
-    },
-    {
-      id: 6,
-      lat: 30,
-      long: 40,
-      title: 'Pokhra, Jaisalmer, Rajasthan, India',
-      pin: 164567,
-    },
-    {
-      id: 7,
-      lat: 30,
-      long: 40,
-      title: 'New Town, Kolkata, West Bengal, India',
-      pin: 895643,
-    },
-  ];
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Filter locations based on the search query
-  const filteredAds = ads.filter((ad) =>
-    ad.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    if (searchQuery && searchQuery.length >= 3) {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      axios
+        .get(`${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`, {
+          params: { input: searchQuery },
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+          setSuggestions(res.data); // expects array as in your example
+        })
+        .catch(() => setSuggestions([]))
+        .finally(() => setLoading(false));
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchQuery]);
 
   return (
     <div className="flex flex-col gap-2 p-5 overflow-y-scroll h-full scrollbar-hide">
-      {filteredAds.length > 0 ? (
-        filteredAds.map((ad) => (
+      {loading ? (
+        <p>Loading...</p>
+      ) : suggestions.length > 0 ? (
+        suggestions.map((item) => (
           <div
-            key={ad.id}
+            key={item.place_id}
             className="flex flex-row items-center gap-2 w-[95%] border p-2 rounded-md cursor-pointer"
-            onClick={() => onSelectLocation(ad.title)} // Call the callback with the selected location
+            onClick={() => onSelectLocation(item.description)}
           >
             <span>
               <i className="ri-map-pin-line"></i>
             </span>
             <span>
-              {ad.title} - {ad.pin}
+              <span className="font-semibold">{item.structured_formatting?.main_text}</span>
+              {item.structured_formatting?.secondary_text && (
+                <span className="text-gray-500 text-sm">, {item.structured_formatting.secondary_text}</span>
+              )}
             </span>
           </div>
         ))

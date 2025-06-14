@@ -16,6 +16,7 @@ const Home = () => {
   const [selectedRide, setSelectedRide] = useState(null); // State to track the selected ride
   const [isRideConfirmed, setIsRideConfirmed] = useState(false); // Flag to check if ride is confirmed
   const activeInputRef = useRef(null); // Ref to track the active input field
+  const [vehicleType, setVehicleType] = useState(''); // State to track the selected vehicle type
   const navigate = useNavigate(); // Hook for navigation
 
   const openPanel = () => {
@@ -109,6 +110,7 @@ const Home = () => {
                   pickup={pickup}
                   destination={destination}
                   setIsRideConfirmed={setIsRideConfirmed}
+                  vehicleType={vehicleType} 
                 />)
             ) : (
               <RideInfo
@@ -116,6 +118,7 @@ const Home = () => {
                 destination={destination}
                 setSelectedRide={setSelectedRide}
                 setIsRideConfirmed={setIsRideConfirmed}
+                setVehicleType={setVehicleType}
               />
             )
           ) : (

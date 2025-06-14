@@ -1,6 +1,27 @@
 import React from 'react'
+import axios from 'axios';
 
-const ConfirmRide = ({ selectedRide, pickup, destination, setIsRideConfirmed }) => {
+const ConfirmRide = ({ selectedRide, pickup, destination, setIsRideConfirmed, vehicleType }) => {
+    const handleConfirm = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(
+                `${import.meta.env.VITE_BASE_URL}/rides/create`,
+                {
+                    pickup,
+                    destination,
+                    vehicleType, // send the selected vehicle type
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            setIsRideConfirmed(true);
+        } catch (err) {
+            alert('Failed to create ride');
+        }
+    };
+
     return (
         <div className='p-2 w-full'>
             <h1>Confirm your Ride</h1>
@@ -21,7 +42,7 @@ const ConfirmRide = ({ selectedRide, pickup, destination, setIsRideConfirmed }) 
             </div>
             <div>
                 <button className='bg-blue-500 text-white p-2 rounded-md w-full mt-4'
-                    onClick={() => { setIsRideConfirmed(true) }}
+                    onClick={handleConfirm}
                 >
                     Confirm Ride
                 </button>
@@ -30,4 +51,4 @@ const ConfirmRide = ({ selectedRide, pickup, destination, setIsRideConfirmed }) 
     )
 }
 
-export default ConfirmRide
+export default ConfirmRide;

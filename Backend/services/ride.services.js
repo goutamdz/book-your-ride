@@ -38,6 +38,8 @@ async function getFare(pickup, destination) {
     return { fare, distanceAndTime };
 }
 
+module.exports.getFare=getFare;
+
 module.exports.createRide = async ({ user, pickup, destination, vehicleType }) => {
     if (!user || !pickup || !destination || !vehicleType) {
         throw new Error("All fields are required");
